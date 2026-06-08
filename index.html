@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cybersecurity & Social Engineering - Day 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060608;
+    --surface: #0b0d0f;
+    --border: #1c1f24;
+    --accent: #ff2d55;
+    --accent2: #30d158;
+    --accent3: #ffd60a;
+    --text: #d1d5db;
+    --muted: #4b5563;
+    --slide-w: 900px;
+    --slide-h: 540px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Barlow', sans-serif;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+    background-image:
+      radial-gradient(ellipse at 100% 0%, rgba(255,45,85,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgba(48,209,88,0.04) 0%, transparent 50%);
+  }
+
+  .workshop-header {
+    width: 100%;
+    max-width: var(--slide-w);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .workshop-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .day-badge {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.9rem;
+    letter-spacing: 0.15em;
+  }
+
+  .stage { width: 100%; max-width: var(--slide-w); }
+
+  .slide {
+    width: 100%;
+    min-height: var(--slide-h);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2.8rem 3.2rem;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    animation: glitch-in 0.3s ease forwards;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes glitch-in {
+    0%   { opacity: 0; clip-path: inset(20% 0 80% 0); }
+    40%  { opacity: 0.7; clip-path: inset(0% 0 0% 0); }
+    100% { opacity: 1; clip-path: inset(0% 0 0% 0); }
+  }
+
+  .slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent), transparent 70%);
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 1.4rem; right: 2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+  }
+
+  .section-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.9rem;
+  }
+
+  .slide-title {
+    font-size: 2.9rem;
+    font-weight: 900;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  .slide-title .hl { color: var(--accent); }
+  .slide-subtitle { font-size: 0.95rem; color: var(--muted); line-height: 1.7; max-width: 500px; }
+  .slide-meta { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+  .meta-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    border: 1px solid rgba(255,45,85,0.3);
+    padding: 0.3rem 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .slide-h2 { font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 1.3rem; text-transform: uppercase; }
+
+  .threat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .threat-card {
+    background: #0d0f11;
+    border: 1px solid var(--border);
+    padding: 1rem 1.1rem;
+    position: relative;
+  }
+  .threat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .threat-card:hover::before { transform: scaleX(1); }
+  .threat-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+  }
+  .threat-card p { font-size: 0.83rem; color: #9ca3af; line-height: 1.5; }
+
+  .bullet { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .bullet li {
+    display: flex; gap: 0.8rem; font-size: 0.9rem; color: var(--text); line-height: 1.5; align-items: flex-start;
+  }
+  .bullet li::before { content: '>>'; font-family: 'Share Tech Mono', monospace; color: var(--accent); font-size: 0.75rem; flex-shrink: 0; padding-top: 0.15rem; }
+
+  .demo-box {
+    background: rgba(255,214,10,0.05);
+    border: 1px solid rgba(255,214,10,0.2);
+    border-left: 3px solid var(--accent3);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  .demo-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .demo-box p { font-size: 0.85rem; color: var(--text); line-height: 1.6; }
+
+  .video-screen {
+    width: 570px;
+    height: 320px;
+    background: #000;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+  }
+  .video-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .agenda { display: flex; flex-direction: column; gap: 0.7rem; }
+  .ag-row { display: flex; gap: 1rem; align-items: flex-start; }
+  .ag-diamond {
+    width: 8px; height: 8px;
+    border: 1.5px solid var(--accent);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    margin-top: 0.3rem;
+  }
+  .ag-text { flex: 1; }
+  .ag-text strong { font-size: 0.88rem; color: #e5e7eb; display: block; margin-bottom: 0.15rem; }
+  .ag-text span { font-size: 0.78rem; color: var(--muted); }
+
+  .assign-box {
+    background: rgba(48,209,88,0.05);
+    border: 1px solid rgba(48,209,88,0.2);
+    border-left: 3px solid var(--accent2);
+    padding: 1.3rem 1.5rem;
+  }
+  .assign-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.8rem;
+  }
+
+  .nav {
+    width: 100%;
+    max-width: var(--slide-w);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.6rem 1.3rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); color: var(--text); }
+  .progress-bar { flex: 1; height: 2px; background: var(--border); margin: 0 1.5rem; }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+  .slide-counter { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--muted); min-width: 45px; text-align: right; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .stat-box {
+    background: #0d0f11;
+    border: 1px solid var(--border);
+    padding: 0.9rem 1rem;
+  }
+  .stat-number {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .infobox {
+    background: rgba(255,45,85,.08);
+    border: 1px solid rgba(255,45,85,.2);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.2rem;
+  }
+  .infobox .ilabel {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .infobox p { font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="workshop-header">
+  <div>
+    <div class="workshop-label">Cybersecurity & Social Engineering</div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">Mr. Grande's Computer Science Summer 2026</div>
+  </div>
+  <div class="day-badge">DAY 1</div>
+</div>
+
+<div class="stage">
+
+  <div class="slide active" id="slide-1">
+    <div class="slide-number">01 / 28</div>
+    <div class="section-tag">Welcome</div>
+    <h1 class="slide-title">How Hackers<br>Think &<br><span class="hl">Manipulate You</span></h1>
+    <p class="slide-subtitle">Cybersecurity is not just about passwords and firewalls. It is about understanding how attackers manipulate human psychology to get what they want.</p>
+  </div>
+
+  <div class="slide" id="slide-2">
+    <div class="slide-number">02 / 28</div>
+    <div class="section-tag">Objectives</div>
+    <h2 class="slide-h2">What You'll Learn Today</h2>
+    <ul class="bullet">
+      <li>Understand hacker psychology and why most attacks succeed through human manipulation, not code</li>
+      <li>Learn how psychology, colors, and design are weaponized against you</li>
+      <li>See real examples of social engineering on children, adults, and companies</li>
+      <li>Understand why billion-dollar companies invest in manipulation tactics</li>
+      <li>Recognize these tactics in your everyday life</li>
+      <li>Learn practical defense strategies against social engineering</li>
+      <li>Develop critical thinking about what is real and what is a scam</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-3">
+    <div class="slide-number">03 / 28</div>
+    <div class="section-tag">Core Concept</div>
+    <h2 class="slide-h2">The Attacker's Mindset</h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Hackers are not evil geniuses. They are psychologists who understand human behavior better than most.</p>
+        <ul class="bullet">
+          <li>Exploit the weakest link: human emotion, not code</li>
+          <li>Use psychology: urgency, fear, trust, curiosity, authority</li>
+          <li>80 percent of breaches start with social engineering</li>
+          <li>They study your behavior patterns online</li>
+          <li>They know exactly what buttons to push in your brain</li>
+        </ul>
+      </div>
+      <div>
+        <div class="infobox">
+          <div class="ilabel">PSYCHOLOGICAL TACTICS</div>
+          <p><strong>Urgency:</strong> "Act now or lose access." Brain panics, logic stops. <strong>Fear:</strong> "Your account was compromised." You are scared into action. <strong>Trust:</strong> "I am from your bank." You lower your guard. <strong>Curiosity:</strong> "See who viewed your profile." You click without thinking. <strong>Authority:</strong> "CEO needs wire transfer." You obey without question.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-4">
+    <div class="slide-number">04 / 28</div>
+    <div class="section-tag">Threat Categories</div>
+    <h2 class="slide-h2">Real Threat Categories Part 1</h2>
+    <div class="threat-grid">
+      <div class="threat-card">
+        <div class="threat-name">PHISHING</div>
+        <p>Fake emails that look real. They trigger urgency and fear. "Your account will be locked in 24 hours" or "Unusual activity detected." Your brain panics and you click.</p>
+      </div>
+      <div class="threat-card">
+        <div class="threat-name">PRETEXTING</div>
+        <p>Attackers create a fictional scenario. "I am from IT support, I need your password to fix your computer." You trust authority and give it up.</p>
+      </div>
+      <div class="threat-card">
+        <div class="threat-name">BAITING</div>
+        <p>Curiosity kills the cat. "Found USB drive in parking lot?" You wonder what is on it. You plug it in. Your computer is now infected with malware.</p>
+      </div>
+      <div class="threat-card">
+        <div class="threat-name">VISHING</div>
+        <p>Voice phishing via phone. Attacker pretends to be your bank. You hear a trusted voice and provide information you would never type.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-5">
+    <div class="slide-number">05 / 28</div>
+    <div class="section-tag">Threat Categories</div>
+    <h2 class="slide-h2">Real Threat Categories Part 2</h2>
+    <div class="threat-grid">
+      <div class="threat-card" style="grid-column:span 2;">
+        <div class="threat-name">TAILGATING AND DUMPSTER DIVING</div>
+        <p>Physical social engineering. Follow someone through a secure door. Dig through trash for documents with passwords or personal info. Old-school but still works in real offices.</p>
+      </div>
+      <div class="threat-card" style="grid-column:span 2;">
+        <div class="threat-name">SPEAR PHISHING</div>
+        <p>Targeted phishing. Attacker researches you specifically. Mentions your real company, real manager, real projects. Feels legitimate because it is personalized to you. More dangerous than generic phishing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-6">
+    <div class="slide-number">06 / 28</div>
+    <div class="section-tag">Psychology</div>
+    <h2 class="slide-h2">The Psychology of Colors</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;">Colors affect your brain instantly. They trigger emotions before you think. This is what attackers exploit.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="stat-box">
+        <div style="font-weight:bold;color:#ff5757;">RED</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Urgency, danger, warning. Phishing: "Action required." Sales: "Limited time offer." Real buttons on dashboards use red for warnings.</p>
+      </div>
+      <div class="stat-box">
+        <div style="font-weight:bold;color:#4a90e2;">BLUE</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Trust, security, authority. Banks use blue. Fake login pages copy blue to seem legitimate. Your brain associates blue with safety.</p>
+      </div>
+      <div class="stat-box">
+        <div style="font-weight:bold;color:#f5a623;">YELLOW/ORANGE</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Attention, energy, happiness. Used to draw your eye to buttons. "Click here now." Taxi cabs are yellow so you notice them. Attackers use this psychology.</p>
+      </div>
+      <div class="stat-box">
+        <div style="font-weight:bold;color:#7ed321;">GREEN</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Go, safe, permission. Green checkmarks make you think something is secure. Green buttons equal "Proceed." Green light means go. Attackers fake this constantly.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-7">
+    <div class="slide-number">07 / 28</div>
+    <div class="section-tag">Design Manipulation</div>
+    <h2 class="slide-h2">How Design Manipulates Behavior</h2>
+    <ul class="bullet">
+      <li>Store carpet in clothing areas: Soft carpet makes you stay longer, spend more money. You feel comfortable so you relax your guard.</li>
+      <li>Bright lights and color psychology: Makes you spend more by feeling energized. Also used in phishing sites to seem more legitimate and trustworthy.</li>
+      <li>Color temperature: Warm lighting (like orange) makes you feel safe and trusted. Attackers mimic this online with warm color schemes.</li>
+      <li>Website design patterns: Long scrolling pages feel more trustworthy than short ones. Fake sites copy this exact design to seem real.</li>
+      <li>Spacing and whitespace: Makes pages feel premium and secure. Professional spacing signals authenticity. Attackers use this deliberately.</li>
+      <li>Button placement: "Continue" and "Buy" buttons larger than "Cancel" or "Go Back." You naturally click the big button.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-8">
+    <div class="slide-number">08 / 28</div>
+    <div class="section-tag">Corporate Investment</div>
+    <h2 class="slide-h2">Companies Investing in Manipulation</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">Billion-dollar companies employ psychologists to manipulate you. This is not a conspiracy. This is real.</p>
+    <ul class="bullet">
+      <li>Meta (Facebook, Instagram): Employs hundreds of behavioral psychologists. Studies show platforms are addictive by design. Red notifications trigger urgency.</li>
+      <li>Google: Uses color psychology, notification psychology, and timing to keep you clicking. Notifications are timed when you are most likely to engage.</li>
+      <li>Apple: Creates scarcity and urgency. "Limited edition." "Only while supplies last." This same psychology is used in phishing attacks.</li>
+      <li>TikTok: Algorithm designed to be more addictive than slot machines. They study your behavior in real-time and adjust what you see within seconds.</li>
+      <li>Netflix: Uses psychology to get you to "just one more episode" so you stay up late and miss sleep.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-9">
+    <div class="slide-number">09 / 28</div>
+    <div class="section-tag">Real-World Examples</div>
+    <h2 class="slide-h2">Social Engineering on Children</h2>
+    <ul class="bullet">
+      <li>Gaming platforms: "Free game download." Child clicks. Malware installed. Parents' credit card gets charged thousands.</li>
+      <li>YouTube: Fake gaming videos that look legitimate. Comments like "Click this link for free robux." Child shares personal info or clicks malware.</li>
+      <li>Discord: Predators pose as peers. Build trust over weeks. Then ask for personal information, photos, or manipulation toward real-world harm.</li>
+      <li>School phishing: Attackers send emails from fake school accounts. "Click to view grades." Steals student and parent data including SSN.</li>
+      <li>Roblox scams: "Click to get free Robux." Leads to phishing site or malware. Predators also use Roblox to identify vulnerable children.</li>
+      <li>Stream platform manipulation: "Follow this link for free gems." Stream ends, link is phishing. Attacker now has victim's login credentials.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-10">
+    <div class="slide-number">10 / 28</div>
+    <div class="section-tag">VIDEO</div>
+    <h2 class="slide-h2">Video: Product Placement Social Engineering</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem;">Documentary footage on how predators manipulate children online. Focus on psychological tactics: trust-building, isolation, then exploitation.</p>
+    <div class="video-screen">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-a29Ygyzc2c?si=2K_jxQL1A3wyOD4X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-11">
+    <div class="slide-number">11 / 28</div>
+    <div class="section-tag">Real-World Examples</div>
+    <h2 class="slide-h2">Social Engineering on Adults</h2>
+    <ul class="bullet">
+      <li>CEO fraud: Attacker poses as CEO via email. Urgency: "Wire 500K immediately for acquisition." Executive does not verify. Money is gone in minutes.</li>
+      <li>Romance scams: Attacker builds relationship over months. You fall in love. Then: "I need money for emergency." You send it. You never see them again. Victims send average 10K.</li>
+      <li>Tech support scams: Pop-up on your screen: "Your computer has a virus. Call this number." You call. They gain remote access. They install malware while you watch.</li>
+      <li>Delivery package scams: Text that looks like it is from Amazon or UPS. "Verify delivery address." You click. They steal your credentials.</li>
+      <li>LinkedIn impersonation: Attacker impersonates recruiter. Gets you interested in job. Then: "We need your social security number." You give it up.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-12">
+    <div class="slide-number">12 / 28</div>
+    <div class="section-tag">VIDEO</div>
+    <h2 class="slide-h2">Video: Social Engineering on Adults</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem;">Interview with real victims. Adults explaining how they were manipulated. Their emotional reactions and regret. The lasting impact on their lives.</p>
+    <div class="video-screen">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fHhNWAKw0bY?si=S5YHVabMIx_cVSA2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>    </div>
+  </div>
+
+  <div class="slide" id="slide-13">
+    <div class="slide-number">13 / 28</div>
+    <div class="section-tag">Attack Statistics</div>
+    <h2 class="slide-h2">Why This Works</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;">
+      <div class="stat-box">
+        <div class="stat-number">80%</div>
+        <div class="stat-label">of breaches start with social engineering</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">1.3B</div>
+        <div class="stat-label">phishing emails sent daily</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">45%</div>
+        <div class="stat-label">of adults fall for tech support scams</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">20B</div>
+        <div class="stat-label">lost annually to romance scams</div>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-top:1.5rem;line-height:1.6;">These attacks work because they target your emotions, not your intelligence. Smart people fall for these. Attackers are trained in psychology. You are not trained in defense.</p>
+  </div>
+
+  <div class="slide" id="slide-14">
+    <div class="slide-number">14 / 28</div>
+    <div class="section-tag">Defense Strategies</div>
+    <h2 class="slide-h2">How to Defend: The 10-Second Rule</h2>
+    <div class="infobox" style="margin-bottom:1rem;">
+      <div class="ilabel">THE RULE</div>
+      <p>When you feel URGENT emotional pressure to act, STOP. Count to 10. Think. This simple pause breaks the attacker's spell.</p>
+    </div>
+    <ul class="bullet">
+      <li>Red flags: Urgent language, threats, too good to be true, asking for passwords, links from unexpected people, grammar errors</li>
+      <li>Verify independently: Do not use links in emails. Go to the official website directly. Call the company's official number. Check official social media.</li>
+      <li>Trust your gut: If something feels off, it probably is. Your instinct is trained from millions of years of human evolution. Listen to it.</li>
+      <li>Check sender email: amazon@verifyaccount.com looks close to amazon.com. Check carefully. One character can be different.</li>
+      <li>Hover over links: Before clicking, hover your mouse. See the actual URL. Does it go to the right place?</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-15">
+    <div class="slide-number">15 / 28</div>
+    <div class="section-tag">Defense Strategies</div>
+    <h2 class="slide-h2">Password Defense</h2>
+    <ul class="bullet">
+      <li>Length over complexity: 16 random characters beats 8 complex characters. Longer is always stronger.</li>
+      <li>Passphrases: "correct-horse-battery-staple" is stronger and more memorable than "P@ssw0rd!"</li>
+      <li>Unique per account: Never reuse passwords. If one service gets hacked, attackers try your password on every site.</li>
+      <li>Two-factor authentication: Text code, app, or hardware key. Even if password is stolen, attacker cannot get in.</li>
+      <li>Password managers: LastPass, 1Password, Dashlane. Generate and store unique passwords for every site. You only remember one master password.</li>
+      <li>Avoid these: Do not use birthdays, pet names, dictionary words, or sequential characters. Attackers try these first.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-16">
+    <div class="slide-number">16 / 28</div>
+    <div class="section-tag">Defense Strategies</div>
+    <h2 class="slide-h2">Email and Account Defense</h2>
+    <ul class="bullet">
+      <li>Email is the key to everything: Password reset goes to email. 2FA codes go to email. Account recovery uses email. Protect your email like a fortress.</li>
+      <li>Never give your password: Legitimate companies never ask for passwords via email, phone, or message. Ever. If asked, it is a scam.</li>
+      <li>Check linked accounts: Go to Facebook/Google settings. See what apps have access to your account. Remove anything you do not recognize.</li>
+      <li>Recover old breaches: Use haveibeenpwned.com. Change passwords for any accounts in breaches. If you reused passwords, change them everywhere.</li>
+      <li>Monitor credit: Use free credit monitoring from annualcreditreport.com. Check for unauthorized accounts in your name.</li>
+      <li>Backup authentication: Do not rely on only text messages. Use an authenticator app. Text messages can be intercepted.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-17">
+    <div class="slide-number">17 / 28</div>
+    <div class="section-tag">Activity 1</div>
+    <h2 class="slide-h2">Activity: Phishing Detective</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">I am showing you five emails right now. Some are real, some are phishing. Your job is to identify which are phishing and explain the psychological tactics used.</p>
+    <div class="demo-box">
+      <div class="demo-label">Instructions</div>
+      <p>For each email you think is phishing, identify:</p>
+      <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+        <li>The psychological emotion being triggered (fear, urgency, curiosity, trust, etc.)</li>
+        <li>The color or design elements that seem fake or manipulative</li>
+        <li>What the attacker wants (credentials, money, personal info, malware)</li>
+        <li>How you would have defended yourself</li>
+      </ul>
+    </div>
+    <p style="font-size:0.85rem;color:var(--accent);margin-top:1rem;">We will discuss your findings as a group.</p>
+  </div>
+
+  <div class="slide" id="slide-18">
+    <div class="slide-number">18 / 28</div>
+    <div class="section-tag">Activity 2</div>
+    <h2 class="slide-h2">Activity: Password Strength & Psychology</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">We are going to visit https://www.security.org/how-secure-is-my-password/ together and test passwords. But we will also discuss the psychology of why people choose weak passwords.</p>
+    <div class="demo-box">
+      <div class="demo-label">Your Task</div>
+      <p>Test 10 common passwords and record:</p>
+      <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+        <li>How long each takes to crack</li>
+        <li>Why people choose these passwords (emotional attachment, ease of remembering)</li>
+        <li>The psychological barriers to creating strong passwords</li>
+      </ul>
+      <p style="margin-top:0.8rem;">Then create one super-strong password that is still memorable to you. Explain how you balanced security with psychology.</p>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-19">
+    <div class="slide-number">19 / 28</div>
+    <div class="section-tag">Activity 3</div>
+    <h2 class="slide-h2">Activity: Breach Check & Personal Risk</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">Use haveibeenpwned.com to check if your email appears in any known breaches. This is your personal security wake-up call.</p>
+    <div class="demo-box">
+      <div class="demo-label">Your Task</div>
+      <p>If your email has been breached:</p>
+      <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+        <li>Which companies or services were hacked?</li>
+        <li>When did the breach happen?</li>
+        <li>Did you reuse passwords across these sites?</li>
+        <li>Write an action plan: What will you do this week to secure your accounts?</li>
+      </ul>
+      <p style="margin-top:0.8rem;">If you have not been breached, research one famous breach and analyze how attackers used psychological manipulation to get in.</p>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-20">
+    <div class="slide-number">20 / 28</div>
+    <div class="section-tag">Activity 4</div>
+    <h2 class="slide-h2">Activity: Spot the Manipulation Around You</h2>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">Today you have learned how colors, design, and psychology are weaponized. Your challenge: Find three examples of manipulation happening right now in your daily life.</p>
+    <div class="demo-box">
+      <div class="demo-label">Your Task</div>
+      <p>Go home tonight and identify:</p>
+      <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+        <li>One example in a physical space (store, restaurant, home design)</li>
+        <li>One example on a website or app you use</li>
+        <li>One example in an advertisement, email, or message you receive</li>
+      </ul>
+      <p style="margin-top:0.8rem;">For each, explain what psychological tactic is being used and why. Bring these to class tomorrow. We will discuss how companies legally use these tactics and how attackers weaponize them illegally.</p>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-21">
+    <div class="slide-number">21 / 28</div>
+    <div class="section-tag">Discussion</div>
+    <h2 class="slide-h2">Critical Thinking: Spotting Red Flags</h2>
+    <ul class="bullet">
+      <li>If it seems too good to be true, it is. Free luxury cruise? Free iPhone? Scam.</li>
+      <li>Urgency is a red flag. Real companies give you time to think. Scams pressure you to act NOW.</li>
+      <li>Grammar and spelling errors signal phishing. Professional companies proof-read. Scammers do not.</li>
+      <li>Requests for passwords are ALWAYS scams. No legitimate company asks for passwords via email or phone.</li>
+      <li>Links and attachments in unexpected emails are dangerous. Do not click. Verify independently.</li>
+      <li>Emotional manipulation is a tactic. Fear, excitement, urgency, guilt. Real decisions are made calmly.</li>
+      <li>Verify with official sources. Call the company's official number. Check their official website. Do not use contact info from the suspicious email.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-22">
+    <div class="slide-number">22 / 28</div>
+    <div class="section-tag">Key Concepts</div>
+    <h2 class="slide-h2">What We Covered Today</h2>
+    <ul class="bullet">
+      <li>Cybersecurity is psychology first, technology second</li>
+      <li>Colors, design, and environment affect your brain instantly and subconsciously</li>
+      <li>Billion-dollar companies study you and use psychology to influence behavior</li>
+      <li>Attackers use the same psychological tactics as legitimate companies</li>
+      <li>You are not stupid if you fall for social engineering. You are human.</li>
+      <li>Understanding the tactics is the first step to defense</li>
+      <li>Awareness and the 10-second pause are your strongest weapons</li>
+      <li>Defense is layered: strong passwords, 2FA, monitoring, verification, critical thinking</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-23">
+    <div class="slide-number">23 / 28</div>
+    <div class="section-tag">Full Agenda</div>
+    <h2 class="slide-h2">Today's Complete Schedule</h2>
+    <div class="agenda">
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>The Attacker's Mindset</strong><span>Psychology, triggers, and why humans are the target</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Threat Categories</strong><span>Phishing, pretexting, baiting, vishing, spear phishing, physical</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Psychology of Colors</strong><span>Red, blue, yellow, green and what your brain does</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Design Manipulation</strong><span>How stores, websites, and apps manipulate behavior</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Corporate Manipulation</strong><span>Meta, Google, Apple, TikTok using psychology</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Social Engineering on Children</strong><span>Gaming, YouTube, Discord, schools with video</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Social Engineering on Adults</strong><span>CEO fraud, romance, tech support with video</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Attack Statistics</strong><span>Real numbers showing scale of the problem</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Defense Strategies</strong><span>10-second rule, passwords, email security</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Four Hands-On Activities</strong><span>Phishing detective, password test, breach check, spot manipulation</span></div></div>
+      <div class="ag-row"><div class="ag-diamond"></div><div class="ag-text"><strong>Critical Thinking</strong><span>Red flags and how to verify</span></div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-24">
+    <div class="slide-number">24 / 28</div>
+    <div class="section-tag">Common Mistakes</div>
+    <h2 class="slide-h2">Mistakes People Make</h2>
+    <ul class="bullet">
+      <li>Thinking they are too smart to fall for scams. Intelligence is not the issue. Everyone is vulnerable when emotional.</li>
+      <li>Reusing passwords. One breach compromises everything. Unique passwords are non-negotiable.</li>
+      <li>Ignoring two-factor authentication. One more step stops 99 percent of attacks even if password is stolen.</li>
+      <li>Clicking links in emails. Do not. Go directly to the website instead. This simple habit stops phishing cold.</li>
+      <li>Not monitoring accounts. Check credit reports and account activity regularly. Early detection saves thousands.</li>
+      <li>Trusting unsolicited contact. Real companies do not contact you unexpectedly asking for account info. Period.</li>
+      <li>Sharing too much online. Attackers use your posts to personalize scams. Keep personal info private.</li>
+    </ul>
+  </div>
+
+  <div class="slide" id="slide-25">
+    <div class="slide-number">25 / 28</div>
+    <div class="section-tag">Homework 1</div>
+    <h2 class="slide-h2">Manipulation Audit: Your Digital Life</h2>
+    <div class="assign-box">
+      <div class="assign-label">Due: Tomorrow Morning. Be Honest. No Judgment.</div>
+      <ul class="bullet">
+        <li>Identify three apps or websites you use daily and explain what psychological tactic each uses</li>
+        <li>Find one advertisement or email that triggered an emotional response from you. Analyze the tactic used.</li>
+        <li>Describe one time you were manipulated into clicking something online. What emotion did they target?</li>
+        <li>If you have been in a data breach, reflect on this: Did you use a weak password because of psychological reasons? (Easy to remember, familiar, meaningful to you?)</li>
+        <li>Write three things you will be more aware of tomorrow as a result of today's lesson</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-26">
+    <div class="slide-number">26 / 28</div>
+    <div class="section-tag">Homework 2</div>
+    <h2 class="slide-h2">Real-World Social Engineering Case Study</h2>
+    <div class="assign-box">
+      <div class="assign-label">Due: End of Week. 2-3 Pages.</div>
+      <p style="font-size:0.88rem;color:var(--text);margin-bottom:1rem;">Find one real social engineering attack from news and analyze the psychological tactics used.</p>
+      <ul class="bullet">
+        <li>What happened? Write a brief summary</li>
+        <li>Which emotions were targeted? (Fear, urgency, trust, curiosity, greed)</li>
+        <li>What colors or design elements were used? How did they help the attack?</li>
+        <li>Why did victims fall for it? What psychological weakness was exploited?</li>
+        <li>How could victims have defended themselves? What red flags should they have noticed?</li>
+        <li>Key lesson: What psychological truth does this teach us about human nature?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-27">
+    <div class="slide-number">27 / 28</div>
+    <div class="section-tag">Preview</div>
+    <h2 class="slide-h2">Tomorrow: Social Engineering Simulations</h2>
+    <div class="infobox">
+      <div class="ilabel">DAY 2 PREVIEW</div>
+      <p>Tomorrow you will participate in realistic social engineering simulations. We will role-play attacks. You will be on the defending side. You will learn to recognize manipulation in real-time and practice saying "no." This is the best way to build muscle memory for defense.</p>
+    </div>
+    <div style="margin-top:1.5rem;padding:1rem;background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.15);border-radius:4px;">
+      <p style="font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--accent);"><strong>Day 2 → Role-play simulations, real-time recognition, defense practice</strong></p>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-28">
+    <div class="slide-number">28 / 28</div>
+    <div class="section-tag">Reflection</div>
+    <h2 class="slide-h2">You Are Now Security-Aware</h2>
+    <p style="font-size:0.95rem;color:#e2e8f0;margin-bottom:1.2rem;">Today you learned something most people never understand:</p>
+    <ul class="bullet">
+      <li>Attackers are psychologists, not just hackers</li>
+      <li>Your brain has weaknesses that can be exploited</li>
+      <li>Understanding the tactics is half the battle</li>
+      <li>Simple practices (10-second rule, unique passwords, 2FA) stop most attacks</li>
+      <li>Awareness is your greatest defense</li>
+    </ul>
+    <p style="font-size:0.88rem;color:var(--muted);margin-top:1.5rem;">This knowledge makes you safer. Share it with your family. Show them how to spot phishing. Teach them about passwords. You might save them from becoming victims.</p>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prev-btn" onclick="changeSlide(-1)" disabled>PREV</button>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="slide-counter" id="counter">1 / 28</div>
+  <button class="nav-btn" id="next-btn" onclick="changeSlide(1)">NEXT</button>
+</div>
+
+<script>
+  let current = 1;
+  const total = 28;
+  function changeSlide(dir) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    current = Math.min(Math.max(current + dir, 1), total);
+    document.getElementById('slide-' + current).classList.add('active');
+    document.getElementById('prev-btn').disabled = current === 1;
+    document.getElementById('next-btn').disabled = current === total;
+    document.getElementById('counter').textContent = current + ' / ' + total;
+    document.getElementById('progress').style.width = ((current / total) * 100) + '%';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+  document.getElementById('progress').style.width = ((1/total)*100) + '%';
+</script>
+</body>
+</html>
